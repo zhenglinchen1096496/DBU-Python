@@ -15,5 +15,8 @@ iris = load_iris()
 df = pd.DataFrame(iris.data, columns=iris.feature_names)
 
 # Using Seaborn for a more complex visualization
-sns.pairplot(df)
+
+df['species'] = iris.target
+
+sns.pairplot(df, hue='species')
 plt.show()
