@@ -41,38 +41,38 @@ plt.show()
 
 # 3. Visualization of box plot: Distribution of total cases by continent
 # This helps to understand how new cases changed over dates
-# plt.figure(figsize=(8, 6))
-# sns.boxplot(x='continent', y='total_cases', data=df)
-# plt.title('total_cases by continent')
-# plt.show()
+plt.figure(figsize=(8, 6))
+sns.boxplot(x='continent', y='total_deaths', data=df)
+plt.title('total_deaths by continent')
+plt.show()
 
 
 # # 4. Visualization of bar plot: Distribution of total death by continent
 # # Aggregate data to get the total deaths per million for each continent
-# continent_data = df.groupby('continent')['total_deaths'].sum().reset_index()
-# plt.figure(figsize=(8, 6))
-# plt.bar(continent_data['continent'], continent_data['total_deaths'])
-# plt.title("Bar Plot of Total Deaths by Continent")
-# plt.xlabel("Continent")
-# plt.ylabel("Total Deaths")
-# plt.xticks(rotation=90)
-# plt.show()
+continent_data = df.groupby('continent')['total_deaths'].sum().reset_index()
+plt.figure(figsize=(8, 6))
+plt.bar(continent_data['continent'], continent_data['total_deaths'])
+plt.title("Bar Plot of Total Deaths by Continent")
+plt.xlabel("Continent")
+plt.ylabel("Total Deaths")
+plt.xticks(rotation=90)
+plt.show()
 
-# # 5. Visualization of Line plot: Distribution of new cases by date
-# plt.figure(figsize=(8, 6))
-# plt.plot(df['date'], df['new_cases_smoothed']) # Pass x and y as series, not as keyword arguments
-# plt.title("Line Plot of new cases by date")
-# plt.xlabel("Date")
-# plt.ylabel("New Cases Smoothed")
-# plt.show()
+# 5. Visualization of Line plot: Distribution of new cases by date
+plt.figure(figsize=(8, 6))
+plt.plot(df['date'], df['new_cases_smoothed']) # Pass x and y as series, not as keyword arguments
+plt.title("Line Plot of new cases by date")
+plt.xlabel("Date")
+plt.ylabel("New Cases Smoothed")
+plt.show()
 
 
-# plt.figure(figsize=(8, 6))
-# plt.plot(df['total_cases'], df['total_vaccinations'])
-# plt.title("Line Plot of relationship between total cases and total_vaccinations")
-# plt.xlabel("total_cases")
-# plt.ylabel("total_vaccinations")
-# plt.show()
+plt.figure(figsize=(8, 6))
+plt.plot(df['total_cases'], df['total_vaccinations'])
+plt.title("Line Plot of relationship between total cases and total_vaccinations")
+plt.xlabel("total_cases")
+plt.ylabel("total_vaccinations")
+plt.show()
 
 # Select relevant numerical columns and the categorical 'continent' column for hue
 covid_data = df[['total_cases', 'new_cases_smoothed', 'total_deaths',  'total_vaccinations', 'continent']].dropna()
