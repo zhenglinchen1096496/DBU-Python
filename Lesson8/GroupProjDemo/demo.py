@@ -1,80 +1,89 @@
-# Import necessary libraries
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, LabelEncoder
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import classification_report, confusion_matrix
-import seaborn as sns
-import os
+data = [
+    {
+        'name': 'Instagram',
+        'follower_count': 346,
+        'description': 'Social media platform',
+        'country': 'United States'
+    },
+    {
+        'name': 'Cristiano Ronaldo',
+        'follower_count': 215,
+        'description': 'Footballer',
+        'country': 'Portugal'
+    },
+    {
+        'name': 'Ariana Grande',
+        'follower_count': 183,
+        'description': 'Musician and actress',
+        'country': 'United States'
+    },
+    {
+        'name': 'Dwayne Johnson',
+        'follower_count': 181,
+        'description': 'Actor and professional wrestler',
+        'country': 'United States'
+    }
+]
 
-# Load the dataset
-# Make sure the dataset is in the same directory or provide the full path to the dataset
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
-df = pd.read_csv('user_behavior_dataset.csv')
+import random
 
-# 1. Data Exploration
-# Display the first few rows of the dataset to get an overview
-print("First 5 rows of the dataset:\n", df.head())
 
-# Display summary statistics for numerical columns
-print("\nSummary statistics:\n", df.describe())
+def format_data(account):
+    """Takes the account data and returns the printable format."""
+    account_name = account["name"]
+    account_descr = account["description"]
+    account_country = account["country"]
+    return f"{account_name}, a {account_descr}, from {account_country}"
 
-# Check for missing values in the dataset
-print("\nMissing values:\n", df.isnull().sum())
 
-# 2. Data Visualization: Correlation heatmap
-# Visualize the correlation between numerical variables using a heatmap
-plt.figure(figsize=(10, 8))
-numeric_df = df.select_dtypes(include=[np.number])
-corr = numeric_df.corr()
-sns.heatmap(corr, annot=True, cmap='coolwarm', linewidths=0.5)
-plt.title('Correlation Heatmap')
-plt.show()
+def check_answer(guess, a_followers, b_followers):
+    """Take a user's guess and the follower counts and returns if they got it right."""
+    if a_followers > b_followers:
+        return guess == "a"
+    else:
+        return guess == "b"
 
-# Visualization: Distribution of App Usage Time based on User Behavior Class
-# This helps to understand how app usage varies between different user behavior classes
-plt.figure(figsize=(8, 6))
-sns.boxplot(x='User Behavior Class', y='App Usage Time (min/day)', data=df)
-plt.title('App Usage Time Distribution by User Behavior Class')
-plt.show()
 
-# 3. Data Preprocessing
-# Convert categorical columns (Operating System, Gender) into numeric values using Label Encoding
-le = LabelEncoder()
-df['Operating System'] = le.fit_transform(df['Operating System'])
-df['Gender'] = le.fit_transform(df['Gender'])
+score = 0
+game_should_continue = True
+# Generate a random account from the game data
+account_b = random.choice(data)
 
-# Define features (X) and target (y)
-# Features will include all columns except 'User ID', 'Device Model', and 'User Behavior Class'
-X = df.drop(columns=['User ID', 'Device Model', 'User Behavior Class'])
-y = df['User Behavior Class']
+# Make the game repeatable.
+while game_should_continue:
 
-# Split the data into training and test sets (70% train, 30% test)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+    # Making account at position B become the next account at position A.
+    account_a = account_b
+    account_b = random.choice(data)
 
-# Feature scaling: Standardize features by removing the mean and scaling to unit variance
-scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
+    if account_a == account_b:
+        account_b = random.choice(data)
 
-# 4. Machine Learning: Logistic Regression Model
-# Create and train the Logistic Regression model on the training data
-model = LogisticRegression(max_iter=1000)
-model.fit(X_train_scaled, y_train)
+    print(f"Compare A: {format_data(account_a)}.")
+    print(f"Against B: {format_data(account_b)}.")
 
-# Make predictions on the test set
-y_pred = model.predict(X_test)
+    # Ask user for a guess.
+    guess = input("Who has more followers? Type 'A' or 'B': ").lower()
 
-# Evaluation of the model's performance using confusion matrix and classification report
-print("\nConfusion Matrix:\n", confusion_matrix(y_test, y_pred))
-print("\nClassification Report:\n", classification_report(y_test, y_pred))
+    # Clear the screen
+    print("\n" * 20)
 
-# Visualize Confusion Matrix using a heatmap
-plt.figure(figsize=(6, 4))
-sns.heatmap(confusion_matrix(y_test, y_pred), annot=True, fmt='d', cmap='Blues')
-plt.title('Confusion Matrix')
-plt.xlabel('Predicted')
-plt.ylabel('Actual')
-plt.show()
+    # - Get follower count of each account
+    a_follower_count = account_a["follower_count"]
+    b_follower_count = account_b["follower_count"]
+
+    # Check if user is correct.
+    is_correct = check_answer(guess, a_follower_count, b_follower_count)
+
+    # Give user feedback on their guess.
+    # score keeping.
+    if is_correct:
+        score += 1
+        print(f"You're right! Current score {score}")
+    else:
+        print(f"Sorry, that's wrong. Final score: {score}.")
+        game_should_continue = False
+
+
+
+
